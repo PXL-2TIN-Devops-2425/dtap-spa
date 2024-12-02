@@ -2,11 +2,11 @@ pipeline {
     agent any
   
     stages {
-        stage ('cleanup'){
-            steps{
-                // TODO
-            }
-        }
+        //stage ('cleanup'){
+        //    steps {
+        //        // TODO
+        //    }
+        //}
         stage('fetch app code') {
             steps {
                 // Get some code from a GitHub repository
