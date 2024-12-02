@@ -13,5 +13,10 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/PXL-2TIN-DevOps-Resources/calculator-app-finished.git'
             }
         }
+        stage('Hello') {
+            steps {
+                echo "Hello"
+            }
+        }
     }
 }
