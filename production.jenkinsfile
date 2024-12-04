@@ -1,9 +1,36 @@
 pipeline {
     agent any
     stages {
-        stage('dtap production') {
+        stage('deploy prod') {
             steps {
-                echo "good luck... man"
+                sshagent(['prod-ssh-key']) {
+                    sh '''
+                    ssh ubuntu@<prod_server_ip> "docker pull <teamdockerhub>/calculator-app"
+                    '''
+                    }
+                }
+            }
+        }
+        stage('start prod') {
+            steps {
+                sshagent(['prod-ssh-key']) {
+                    sh '''
+                    ssh ubuntu@<prod_server_ip> "
+                    docker rm -f calculator-app || true &&
+                    docker run -d -p 80:3000 --name calculator-app <teamdockerhub>/calculator-app
+                    "
+                    '''
+                    }
+                }
+            }
+        }
+        stage('test prod') {
+            steps {
+                sshagent(['prod-ssh-key']) {
+                sh '''
+                curl -I http://<prod_server_ip> | grep "200 OK" || exit 1
+                '''
+                }
             }
         }
     }
