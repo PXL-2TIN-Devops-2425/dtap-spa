@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('deploy prod') {
             steps {
-                sshagent(['prod-ssh-key']) {
+                sshagent(['production_server']) {
                     sh '''
                     ssh ubuntu@<prod_server_ip> "docker pull <teamdockerhub>/calculator-app"
                     '''
@@ -13,7 +13,7 @@ pipeline {
         }
         stage('start prod') {
             steps {
-                sshagent(['prod-ssh-key']) {
+                sshagent(['production_server']) {
                     sh '''
                     ssh ubuntu@<prod_server_ip> "
                     docker rm -f calculator-app || true &&
@@ -26,7 +26,7 @@ pipeline {
         }
         stage('test prod') {
             steps {
-                sshagent(['prod-ssh-key']) {
+                sshagent(['production_server']) {
                 sh '''
                 curl -I http://<prod_server_ip> | grep "200 OK" || exit 1
                 '''
