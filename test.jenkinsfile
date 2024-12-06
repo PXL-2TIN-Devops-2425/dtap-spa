@@ -1,6 +1,6 @@
 pipeline {
     agent any
-     tools {
+    tools {
         // Gebruik de Node.js-toolconfiguratie genaamd 'testenvnode'
         nodejs 'testenvnode'
     }
@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Cleanup') {
             steps {
-                sh 'rm -rf *'
+                cleanWs()
             }
         }
         stage('Install dependencies') {
@@ -19,6 +19,12 @@ pipeline {
                 // Voer het npm install commando uit
                 sh 'npm install'
             }     
+        }
+        stage('Check Directory') {
+            steps {
+                sh 'pwd' // Laat zien waar je werkt
+                sh 'ls -la' // Laat zien wat er in de directory staat
+            }
         }
     }
 }
