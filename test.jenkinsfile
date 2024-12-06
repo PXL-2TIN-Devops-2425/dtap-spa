@@ -11,6 +11,12 @@ pipeline {
                 cleanWs()
             }
         }
+         stage('Checkout repository') {
+            steps {
+                // Clonen van de GitHub repository
+                git 'https://github.com/PXL-2TIN-Devops-2425/dtap-spa.git'
+            }
+        }
         stage('Install dependencies') {
             steps {
                 script {
