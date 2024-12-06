@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'martijnvb2003/dtap_image:latest'  // Vervang dit door je eigen Docker Hub image
-        PROD_SERVER = '172.31.93.240'  // Vervang dit door je remote server IP of domeinnaam
+        PROD_SERVER = '44.211.82.173'  // Vervang dit door je remote server IP of domeinnaam
         PROD_SSH_KEY = 'production_server'  // Vervang dit door de juiste SSH key ID in Jenkins
     }
     
