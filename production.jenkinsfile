@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'martijnvb2003/dtap_image:latest'  // Vervang dit door je eigen Docker Hub image
-        PROD_SERVER = '172.31.93.240'  // Vervang dit door je remote server IP of domeinnaam
+        PROD_SERVER = '193.190.154.175'  // Vervang dit door je remote server IP of domeinnaam
         PROD_SSH_KEY = 'production_server'  // Vervang dit door de juiste SSH key ID in Jenkins
     }
     
@@ -17,7 +17,7 @@ pipeline {
                 sshagent(credentials: [PROD_SSH_KEY]) {
                     // Download de laatste versie van de Docker-container op de remote server
                     sh """
-                        ssh -o StrictHostKeyChecking=no ubuntu@${PROD_SERVER} \
+                        ssh -o StrictHostKeyChecking=no user@${PROD_SERVER} \
                         'docker pull ${DOCKER_IMAGE}'
                     """
                 }
