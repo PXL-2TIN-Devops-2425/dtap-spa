@@ -11,15 +11,22 @@ pipeline {
                 cleanWs()
             }
         }
-        stage('Install dependencies') {
+
+        stage('Debug') {
             steps {
-                script {
-                    echo 'Using Node.js tool: testenvnode'
-                }
-                // Voer het npm install commando uit
-                sh 'npm install'
-            }     
+                sh 'pwd'           // Toon de huidige directory
+                sh 'ls -la'        // Toon alle bestanden en directories
+            }
         }
+        //stage('Install dependencies') {
+        //    steps {
+        //        script {
+        //            echo 'Using Node.js tool: testenvnode'
+        //        }
+                // Voer het npm install commando uit
+       //         sh 'npm install'
+       //     }     
+        //}
         stage('Check Directory') {
             steps {
                 sh 'pwd' // Laat zien waar je werkt
