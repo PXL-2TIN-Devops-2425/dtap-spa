@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    agent {
+        dockerfile true
+    }
     tools {
         // Gebruik de Node.js-toolconfiguratie genaamd 'testenvnode'
         nodejs 'testenvnode'
@@ -21,10 +23,9 @@ pipeline {
                 sh 'npm install'
             }     
         }
-        stage('Check Directory') {
+        stage('Build artifact') {
             steps {
-                sh 'pwd' // Laat zien waar je werkt
-                sh 'ls -la' // Laat zien wat er in de directory staat
+                sh 'docker build -t dtap_image .'   
             }
         }
     }
