@@ -1,9 +1,56 @@
 pipeline {
     agent any
+
+    environment {
+        DOCKER_IMAGE = 'martijnvb2003/dtap_image:latest'  // Vervang dit door je eigen Docker Hub image
+        PROD_SERVER = '54.89.240.243'  // Vervang dit door je remote server IP of domeinnaam
+        PROD_SSH_KEY = 'production_server'  // Vervang dit door de juiste SSH key ID in Jenkins
+    }
+    
     stages {
-        stage('dtap production') {
+       stage('Deploy prod') {
             steps {
-                echo "good luck..."
+                script {
+                    echo 'Deploying the latest Docker image to the production server'
+                }
+                // Gebruik de ssh-agent plugin om in te loggen op de remote server
+                sshagent(credentials: [PROD_SSH_KEY]) {
+                    // Download de laatste versie van de Docker-container op de remote server
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ubuntu@${PROD_SERVER} \
+                        'docker pull ${DOCKER_IMAGE}'
+                    """
+                }
+            }
+        }
+        stage('Start prod') {
+            steps {
+                script {
+                    echo 'Starting the Docker container on the production server'
+                }
+                // Start de Docker-container op de remote server op poort 80
+                sshagent(credentials: [PROD_SSH_KEY]) {
+                    sh """
+                        # Stop the running container (if any) using port 80
+                        ssh -o StrictHostKeyChecking=no ubuntu@${PROD_SERVER} \
+                        'docker ps -q --filter "ancestor=${DOCKER_IMAGE}" | xargs -r docker stop'
+
+                        ssh -o StrictHostKeyChecking=no ubuntu@${PROD_SERVER} \
+                        'docker run -d -p 80:3000 ${DOCKER_IMAGE}'
+                    """
+                }
+            }
+        }
+
+        stage('Test prod') {
+            steps {
+                script {
+                    echo 'Testing if the application is working on the production server'
+                }
+                // Gebruik curl om te controleren of de applicatie draait en reageert met statuscode 200
+                sh """
+                    curl -f ${PROD_SERVER}:80 || echo "App not reachable"
+                """
             }
         }
     }
