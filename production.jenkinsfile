@@ -23,5 +23,31 @@ pipeline {
                 }
             }
         }
+        stage('Start prod') {
+            steps {
+                script {
+                    echo 'Starting the Docker container on the production server'
+                }
+                // Start de Docker-container op de remote server op poort 80
+                sshagent(credentials: [PROD_SSH_KEY]) {
+                    sh """
+                        ssh -o StrictHostKeyChecking=no user@${PROD_SERVER} \
+                        'docker run -d -p 80:3000 ${DOCKER_IMAGE}'
+                    """
+                }
+            }
+        }
+
+        stage('Test prod') {
+            steps {
+                script {
+                    echo 'Testing if the application is working on the production server'
+                }
+                // Gebruik curl om te controleren of de applicatie draait en reageert met statuscode 200
+                sh """
+                    curl -f http://${PROD_SERVER}:80 || echo "App not reachable"
+                """
+            }
+        }
     }
 }
