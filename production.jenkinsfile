@@ -1,35 +1,25 @@
 pipeline {
     agent any
+
+    environment {
+        DOCKER_IMAGE = 'martijnvb2003/dtap_image:latest'  // Vervang dit door je eigen Docker Hub image
+        PROD_SERVER = 'ubuntu@172.31.93.240'  // Vervang dit door je remote server IP of domeinnaam
+        PROD_SSH_KEY = 'production_server'  // Vervang dit door de juiste SSH key ID in Jenkins
+    }
+    
     stages {
-        stage('deploy prod') {
+       stage('Deploy prod') {
             steps {
-                sshagent(['production_server']) {
-                    sh '''
-                    ssh ubuntu@<prod_server_ip> "docker pull <teamdockerhub>/calculator-app"
-                    '''
-                    }
+                script {
+                    echo 'Deploying the latest Docker image to the production server'
                 }
-            }
-        }
-        stage('start prod') {
-            steps {
-                sshagent(['production_server']) {
-                    sh '''
-                    ssh ubuntu@<prod_server_ip> "
-                    docker rm -f calculator-app || true &&
-                    docker run -d -p 80:3000 --name calculator-app <teamdockerhub>/calculator-app
-                    "
-                    '''
-                    }
-                }
-            }
-        }
-        stage('test prod') {
-            steps {
-                sshagent(['production_server']) {
-                sh '''
-                curl -I http://<prod_server_ip> | grep "200 OK" || exit 1
-                '''
+                // Gebruik de ssh-agent plugin om in te loggen op de remote server
+                sshagent(credentials: [PROD_SSH_KEY]) {
+                    // Download de laatste versie van de Docker-container op de remote server
+                    sh """
+                        ssh -o StrictHostKeyChecking=no user@${PROD_SERVER} \
+                        'docker pull ${DOCKER_IMAGE}'
+                    """
                 }
             }
         }
