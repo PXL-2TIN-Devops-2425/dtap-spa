@@ -45,7 +45,7 @@ pipeline {
                 }
                 // Gebruik curl om te controleren of de applicatie draait en reageert met statuscode 200
                 sh """
-                    curl -f http://${PROD_SERVER}:80 || echo "App not reachable"
+                    curl -f ${PROD_SERVER}:80 || echo "App not reachable"
                 """
             }
         }
