@@ -4,6 +4,10 @@ pipeline {
         // Gebruik de Node.js-toolconfiguratie genaamd 'testenvnode'
         nodejs 'testenvnode'
     }
+    environment {
+        DOCKER_IMAGE = 'martijnvb2003/dtap_image:latest' // Pas dit aan naar het Docker image van je teamgenoot
+        DOCKER_HUB_CREDENTIALS = 'dockerhub-credentials' // Vul hier de juiste credentials ID in voor Docker Hub
+    }
   
     stages {
         stage('Cleanup') {
@@ -31,10 +35,6 @@ pipeline {
             steps {
                 sh 'docker build -t dtap_image .'   
             }
-        }
-        environment {
-        DOCKER_IMAGE = 'martijnvb2003/dtap_image:latest' // Pas dit aan naar het Docker image van je teamgenoot
-        DOCKER_HUB_CREDENTIALS = 'dockerhub-credentials' // Vul hier de juiste credentials ID in voor Docker Hub
         }
         stage('Push artifact') {
             steps {
