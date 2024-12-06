@@ -49,5 +49,17 @@ pipeline {
                 
             }
         }
+         stage('Deployment') {
+            steps {
+                // Stop de bestaande container als die al draait
+                sh 'docker ps -q -f "ancestor=${DOCKER_IMAGE}" | xargs -r docker stop'  // Stop de bestaande container(s)
+
+                // Verwijder oude containers die al draaien
+                sh 'docker ps -a -q -f "ancestor=${DOCKER_IMAGE}" | xargs -r docker rm'  // Verwijder oude containers
+
+                // Start de nieuwe container op poort 3000
+                sh 'docker run -d -p 3000:3000 ${DOCKER_IMAGE}'  // Start de container op poort 3000
+            }
+        }
     }
 }
