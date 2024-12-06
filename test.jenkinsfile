@@ -18,7 +18,7 @@ pipeline {
          stage('Checkout repository') {
             steps {
                 // Clonen van de GitHub repository
-                git branch: 'main', url: 'https://github.com/PXL-2TIN-Devops-2425/dtap-spa.git'
+                git branch: 'main', url: 'https://github.com/MartijnVBPXL/calculator-app-finished.git'
             }
         }
         stage('Install dependencies') {
